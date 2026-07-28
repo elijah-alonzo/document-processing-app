@@ -7,6 +7,7 @@ use App\Features\DocumentSubmissions\Livewire\DocumentDetailsPanel;
 use App\Features\DocumentSubmissions\Livewire\DocumentPreview;
 use App\Features\DocumentSubmissions\Models\DocumentSubmission;
 use Filament\Pages\Page;
+use Filament\Panel;
 use Filament\Schemas\Components\Livewire;
 use Filament\Schemas\Schema;
 
@@ -66,7 +67,7 @@ class SubmissionView extends Page
         ];
     }
 
-    public static function getSlug(): string
+    public static function getSlug(?Panel $panel = null): string
     {
         return 'submissions/{record}';
     }
