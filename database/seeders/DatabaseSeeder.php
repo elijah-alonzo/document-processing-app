@@ -37,7 +37,7 @@ class DatabaseSeeder extends Seeder
         $adminRole->syncPermissions(Permission::query()->pluck('name')->all());
 
         $admin = User::firstOrCreate(
-            ['email' => 'admin@app.com'],
+            ['email' => 'admin@sys.com'],
             [
                 'first_name' => 'System',
                 'middle_initial' => null,
@@ -48,6 +48,14 @@ class DatabaseSeeder extends Seeder
         );
 
         $admin->syncRoles([$adminRole]);
+
+        // Demo data for document workflows. Order matters: roles before
+        // processes (stages reference roles), processes before categories
+        // (categories link to a process).
+        $this->call([
+            RoleSeeder::class,
+            DocumentProcessSeeder::class,
+            DocumentCategorySeeder::class,
+        ]);
     }
 }
-

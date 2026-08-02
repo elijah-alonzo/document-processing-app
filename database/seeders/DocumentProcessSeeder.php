@@ -9,11 +9,6 @@ use Illuminate\Database\Seeder;
 
 class DocumentProcessSeeder extends Seeder
 {
-    /**
-     * Demo approval processes, each with an ordered set of stages.
-     * Depends on RoleSeeder having run first (falls back to creating
-     * any missing role on the fly, so it's still safe standalone).
-     */
     public function run(): void
     {
         foreach ($this->processes() as $definition) {
