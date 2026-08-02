@@ -54,7 +54,7 @@ class AppPanelProvider extends PanelProvider
             ])
             ->brandLogo(asset('app.png'))
             ->brandLogoHeight('2rem')
-            ->viteTheme('resources/css/filament/App/theme.css')
+            ->viteTheme('resources/css/filament/app/theme.css')
             ->colors([
                 'primary' => Color::hex('#2dbcc5'),
             ]);
