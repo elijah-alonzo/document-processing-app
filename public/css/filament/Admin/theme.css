@@ -1,0 +1,4 @@
+@import 'tailwindcss';
+
+@source '../../../../app/Filament/Admin';
+@source '../../../../app/Features';
