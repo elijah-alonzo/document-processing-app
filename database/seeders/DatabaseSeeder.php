@@ -37,7 +37,7 @@ class DatabaseSeeder extends Seeder
         $adminRole->syncPermissions(Permission::query()->pluck('name')->all());
 
         $admin = User::firstOrCreate(
-            ['email' => 'admin@sys.com'],
+            ['email' => 'admin@app.com'],
             [
                 'first_name' => 'System',
                 'middle_initial' => null,
