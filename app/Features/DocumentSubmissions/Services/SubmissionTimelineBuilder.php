@@ -88,4 +88,4 @@ class SubmissionTimelineBuilder
 
         return $entries;
     }
-}s
+}

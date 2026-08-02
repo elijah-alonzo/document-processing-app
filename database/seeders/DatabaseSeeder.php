@@ -15,12 +15,8 @@ class DatabaseSeeder extends Seeder
 {
     use WithoutModelEvents;
 
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // Generate Shield permissions for every Filament resource in the admin panel.
         Artisan::call('shield:generate', [
             '--all' => true,
             '--option' => 'permissions',
@@ -31,13 +27,11 @@ class DatabaseSeeder extends Seeder
 
         app(PermissionRegistrar::class)->forgetCachedPermissions();
 
-        // The platform ships with a single bootstrap role. All other roles are
-        // user-defined at runtime through the RoleResource per README.
         $adminRole = Role::firstOrCreate(['name' => 'Admin']);
         $adminRole->syncPermissions(Permission::query()->pluck('name')->all());
 
         $admin = User::firstOrCreate(
-            ['email' => 'admin@sys.com'],
+            ['email' => 'admin@app.com'],
             [
                 'first_name' => 'System',
                 'middle_initial' => null,
@@ -49,9 +43,6 @@ class DatabaseSeeder extends Seeder
 
         $admin->syncRoles([$adminRole]);
 
-        // Demo data for document workflows. Order matters: roles before
-        // processes (stages reference roles), processes before categories
-        // (categories link to a process).
         $this->call([
             RoleSeeder::class,
             DocumentProcessSeeder::class,
