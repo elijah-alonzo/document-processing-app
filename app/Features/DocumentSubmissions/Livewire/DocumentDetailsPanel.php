@@ -16,6 +16,8 @@ class DocumentDetailsPanel extends Component
 
     public $file = null;
 
+    public bool $uploadSuccess = false;
+
     public function uploadFile(): void
     {
         abort_unless($this->canEdit(), 403);
@@ -30,6 +32,9 @@ class DocumentDetailsPanel extends Component
 
         $this->file = null;
         $this->submission->refresh();
+        $this->uploadSuccess = true;
+
+        $this->dispatch('document-uploaded');
     }
 
     protected function canEdit(): bool
