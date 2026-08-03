@@ -123,6 +123,15 @@
             </div>
         @endif
 
+
+// Test statement
+        @if ($uploadSuccess)
+            <div class="mb-3 flex items-center gap-1.5 text-xs text-success-600 dark:text-success-400">
+                <x-heroicon-o-check-circle class="w-3.5 h-3.5" />
+                File uploaded successfully.
+            </div>
+        @endif
+
     </div>
 
     {{-- Status Timeline --}}
