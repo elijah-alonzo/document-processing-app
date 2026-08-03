@@ -10,7 +10,7 @@ class DocumentPreview extends Component
 {
     public DocumentSubmission $submission;
 
-    public function getFileUrlAttribute(): ?string
+    public function getFileUrl(): ?string
     {
         if (! $this->submission->file_path) {
             return null;
@@ -19,7 +19,7 @@ class DocumentPreview extends Component
         return asset('storage/' . $this->submission->file_path);
     }
 
-    public function getFileExtensionAttribute(): ?string
+    public function getFileExtension(): ?string
     {
         if (! $this->submission->file_path) {
             return null;
@@ -28,9 +28,9 @@ class DocumentPreview extends Component
         return strtolower(pathinfo($this->submission->file_path, PATHINFO_EXTENSION));
     }
 
-    public function getPreviewTypeAttribute(): string
+    public function getPreviewType(): string
     {
-        return match ($this->fileExtension) {
+        return match ($this->getFileExtension()) {
             'pdf'        => 'pdf',
             'jpg', 'jpeg', 'png', 'gif', 'webp' => 'image',
             null         => 'none',
@@ -41,9 +41,9 @@ class DocumentPreview extends Component
     public function render(): View
     {
         return view('DocumentPreview', [
-            'fileUrl'     => $this->fileUrlAttribute,
-            'previewType' => $this->previewTypeAttribute,
-            'extension'   => $this->fileExtensionAttribute,
+            'fileUrl'     => $this->getFileUrl(),
+            'previewType' => $this->getPreviewType(),
+            'extension'   => $this->getFileExtension(),
         ]);
     }
 }
