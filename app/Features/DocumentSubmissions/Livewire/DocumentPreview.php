@@ -3,47 +3,51 @@
 namespace App\Features\DocumentSubmissions\Livewire;
 
 use App\Features\DocumentSubmissions\Models\DocumentSubmission;
+use App\Features\DocumentSubmissions\Services\SubmissionTimelineBuilder;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
-class DocumentPreview extends Component
+class DocumentDetailsPanel extends Component
 {
+    use WithFileUploads;
+
     public DocumentSubmission $submission;
 
-    public function getFileUrl(): ?string
-    {
-        if (! $this->submission->file_path) {
-            return null;
-        }
+    public $file = null;
 
-        return asset('storage/' . $this->submission->file_path);
+    public bool $uploadSuccess = false;
+
+    public function uploadFile(): void
+    {
+        abort_unless($this->canEdit(), 403);
+
+        $this->validate([
+            'file' => 'required|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:10240',
+        ]);
+
+        $path = $this->file->store('documents', 'public');
+
+        $this->submission->update(['file_path' => $path]);
+
+        $this->file = null;
+        $this->submission->refresh();
+        $this->uploadSuccess = true;
+
+        $this->dispatch('document-uploaded');
     }
 
-    public function getFileExtension(): ?string
+    protected function canEdit(): bool
     {
-        if (! $this->submission->file_path) {
-            return null;
-        }
-
-        return strtolower(pathinfo($this->submission->file_path, PATHINFO_EXTENSION));
+        return $this->submission->isUploaderOrCreator(auth()->user())
+            && $this->submission->canEditFile();
     }
 
-    public function getPreviewType(): string
+    public function render(SubmissionTimelineBuilder $timelineBuilder): View
     {
-        return match ($this->getFileExtension()) {
-            'pdf'        => 'pdf',
-            'jpg', 'jpeg', 'png', 'gif', 'webp' => 'image',
-            null         => 'none',
-            default      => 'download',
-        };
-    }
-
-    public function render(): View
-    {
-        return view('DocumentPreview', [
-            'fileUrl'     => $this->getFileUrl(),
-            'previewType' => $this->getPreviewType(),
-            'extension'   => $this->getFileExtension(),
+        return view('DocumentDetailsPanel', [
+            'canEdit' => $this->canEdit(),
+            'timelineEntries' => $timelineBuilder->build($this->submission),
         ]);
     }
 }
