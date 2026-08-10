@@ -3,51 +3,30 @@
 namespace App\Features\DocumentSubmissions\Livewire;
 
 use App\Features\DocumentSubmissions\Models\DocumentSubmission;
-use App\Features\DocumentSubmissions\Services\SubmissionTimelineBuilder;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
-use Livewire\WithFileUploads;
 
 class DocumentPreview extends Component
 {
-    use WithFileUploads;
-
     public DocumentSubmission $submission;
 
-    public $file = null;
+    protected $listeners = [
+        'document-uploaded' => '$refresh',
+    ];
 
-    public bool $uploadSuccess = false;
-
-    public function uploadFile(): void
+    public function render(): View
     {
-        abort_unless($this->canEdit(), 403);
+        $path = $this->submission->file_path;
 
-        $this->validate([
-            'file' => 'required|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:10240',
-        ]);
+        // Extract metadata safely if a file path exists
+        $fileUrl = $path ? Storage::disk('public')->url($path) : null;
+        $extension = $path ? strtolower(pathinfo($path, PATHINFO_EXTENSION)) : null;
 
-        $path = $this->file->store('documents', 'public');
-
-        $this->submission->update(['file_path' => $path]);
-
-        $this->file = null;
-        $this->submission->refresh();
-        $this->uploadSuccess = true;
-
-        $this->dispatch('document-uploaded');
-    }
-
-    protected function canEdit(): bool
-    {
-        return $this->submission->isUploaderOrCreator(auth()->user())
-            && $this->submission->canEditFile();
-    }
-
-    public function render(SubmissionTimelineBuilder $timelineBuilder): View
-    {
-        return view('DocumentDetailsPanel', [
-            'canEdit' => $this->canEdit(),
-            'timelineEntries' => $timelineBuilder->build($this->submission),
+        return view('DocumentPreview', [
+            'fileUrl' => $fileUrl,
+            'extension' => $extension,     // Fixes Undefined variable $extension on line 63
+            'previewType' => $extension,   // Satisfies the $previewType conditional on line 21
         ]);
     }
 }
