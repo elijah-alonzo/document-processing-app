@@ -8,7 +8,7 @@ use Illuminate\Contracts\View\View;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
-class DocumentDetailsPanel extends Component
+class DocumentPreview extends Component
 {
     use WithFileUploads;
 
