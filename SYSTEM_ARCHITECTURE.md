@@ -1,4 +1,4 @@
-When developing a Laravel project, I usually organize everything under the app/ directory. The exact structure depends on the tools I plan to use—whether it's just pure Laravel, Filament, or a combination of both. I adapt the structure to fit the tools and features I need, keeping things clean and modular.
+This is the architecture guide for this project so you can navigate through it. Its a Domain Driven Design.
 
 ```
 app/
